@@ -44,9 +44,6 @@ function init()
 {
     global $wpdb;
 
-    // $wpdb->query( "DROP TABLE IF EXISTS medical_specialties" );
-    // $wpdb->query( "DROP TABLE IF EXISTS healers" );
-
     function is_table_empty($table_name)
     {
         global $wpdb;
