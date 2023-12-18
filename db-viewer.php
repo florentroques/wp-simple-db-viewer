@@ -48,9 +48,11 @@ function init()
     {
         global $wpdb;
 
-        $result = $wpdb->get_results("SELECT * from {$table_name} LIMIT 1");
-
-        return count($result) == 0;
+        return '0' == $wpdb->get_var("
+            SELECT COUNT(*)
+            FROM {$table_name}
+            LIMIT 1
+        ");
     }
 
     $tables_names = [];
