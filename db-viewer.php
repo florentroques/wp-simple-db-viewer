@@ -16,7 +16,7 @@ function add_bootstrap_css_db_viewer()
 
     if (!(
         ($pagenow == 'admin.php') &&
-        ($_GET['page'] == 'db-viewer')
+        (isset($_GET['page']) && $_GET['page'] == 'db-viewer')
     )) {
         return;
     }
