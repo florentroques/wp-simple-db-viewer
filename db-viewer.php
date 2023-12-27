@@ -36,7 +36,7 @@ function setup_menu_plugin_db_viewer()
         'db-viewer',
         'init',
         '',
-        3
+        3.1
     );
 }
 
@@ -48,7 +48,7 @@ function init()
     {
         global $wpdb;
 
-        return '0' == $wpdb->get_var("
+        return '0' === $wpdb->get_var("
             SELECT COUNT(*)
             FROM {$table_name}
             LIMIT 1
