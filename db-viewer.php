@@ -21,7 +21,7 @@ function add_bootstrap_css_db_viewer()
         return;
     }
 
-    wp_enqueue_style('bootstrap-styles', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css');
+    wp_enqueue_style('db_viewer_bootstrap-styles', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css');
 }
 
 
@@ -34,13 +34,13 @@ function setup_menu_plugin_db_viewer()
         'Database Viewer',
         'manage_options',
         'db-viewer',
-        'init',
+        'db_viewer',
         '',
         3.1
     );
 }
 
-function init()
+function db_viewer()
 {
     global $wpdb;
 
