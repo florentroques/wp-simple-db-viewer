@@ -68,10 +68,58 @@ function init()
         echo '<h1>Tables</h1>';
 
         foreach ($tables_names as $table_name) {
-            echo '<a href="admin.php?page=db-viewer&table_name=' . $table_name . '">' . $table_name . '</a><br>';
+            echo $table_name;
+            echo ' | ';
+            echo '<a href="admin.php?page=db-viewer&table_name=' . $table_name . '">Show data</a>';
+            echo ' | ';
+            echo '<a href="admin.php?page=db-viewer&table_name=' . $table_name . '&structure">Show structure</a>';
+            echo '<br>';
         }
     } elseif (in_array($_GET['table_name'], $tables_names)) {
         $table_name = $_GET['table_name'];
+
+        if (isset($_GET['structure'])) {
+            echo '<h1>Structure of ' . $table_name . '</h1>';
+            echo '<a href="admin.php?page=db-viewer"><- Back</a>';
+
+            echo '<table class="table table-striped w-auto">';
+            echo '<tr>';
+            echo '<th>Column</th>';
+            echo '<th>Type</th>';
+            echo '</tr>';
+
+            // An array of table field names
+            $existing_columns = $wpdb->get_col("DESC $table_name");
+
+            foreach ($existing_columns as $column) {
+                $result = $wpdb->get_results("
+                    SELECT COLUMN_TYPE, IS_NULLABLE, EXTRA
+                    FROM information_schema.columns
+                    WHERE table_name = '$table_name'
+                    AND column_name = '$column'
+                ");
+
+                echo '<tr>';
+                echo '<td>' . $column . '</td>';
+                echo '<td>' . $result[0]->COLUMN_TYPE;
+
+                if ($result[0]->IS_NULLABLE === 'YES') {
+                    echo ' NULL';
+                } else {
+                    echo ' NOT NULL';
+                }
+
+                if ($result[0]->EXTRA === 'auto_increment') {
+                    echo ' AUTO_INCREMENT';
+                }
+
+                echo '</td>';
+                echo '</tr>';
+            }
+
+            echo '</table>';
+            return;
+        }
 
         if (is_table_empty($table_name)) {
             echo 'The table ' . $table_name . ' is empty';
@@ -80,7 +128,8 @@ function init()
 
         $results = $wpdb->get_results("SELECT * from {$table_name}");
 
-        echo '<h1>' . $table_name . '</h1>';
+        echo '<h1>Content of ' . $table_name . '</h1>';
+        echo '<a href="admin.php?page=db-viewer"><- Back</a>';
         echo '<table class="table table-striped w-auto">';
 
         $keys = array_keys((array) $results[0]);
