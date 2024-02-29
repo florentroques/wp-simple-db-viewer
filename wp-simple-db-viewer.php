@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name: Database tables viewer
  * Description: View your database tables
@@ -8,39 +7,40 @@
 
 if (!defined('ABSPATH')) exit;
 
-add_action('admin_enqueue_scripts', 'add_bootstrap_css_db_viewer');
+define('WSDV_PLUGIN_SLUG', 'wp-simple-db-viewer');
 
-function add_bootstrap_css_db_viewer()
+add_action('admin_enqueue_scripts', 'wsdv_add_bootstrap_css');
+
+function wsdv_add_bootstrap_css()
 {
     global $pagenow;
 
     if (!(
         ($pagenow == 'admin.php') &&
-        (isset($_GET['page']) && $_GET['page'] == 'db-viewer')
+        (isset($_GET['page']) && $_GET['page'] == WSDV_PLUGIN_SLUG)
     )) {
         return;
     }
 
-    wp_enqueue_style('db_viewer_bootstrap-styles', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css');
+    wp_enqueue_style('wsdv-bootstrap-styles', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css');
 }
 
+add_action('admin_menu', 'wsdv_setup_menu_plugin');
 
-add_action('admin_menu', 'setup_menu_plugin_db_viewer');
-
-function setup_menu_plugin_db_viewer()
+function wsdv_setup_menu_plugin()
 {
     add_menu_page(
         'Database Viewer',
         'Database Viewer',
         'manage_options',
-        'db-viewer',
-        'db_viewer',
+        WSDV_PLUGIN_SLUG,
+        'wp_simple_db_viewer',
         '',
         3.1
     );
 }
 
-function db_viewer()
+function wp_simple_db_viewer()
 {
     global $wpdb;
 
@@ -70,9 +70,9 @@ function db_viewer()
         foreach ($tables_names as $table_name) {
             echo $table_name;
             echo ' | ';
-            echo '<a href="admin.php?page=db-viewer&table_name=' . $table_name . '">Show data</a>';
+            echo '<a href="admin.php?page=' . WSDV_PLUGIN_SLUG . '&table_name=' . $table_name . '">Show data</a>';
             echo ' | ';
-            echo '<a href="admin.php?page=db-viewer&table_name=' . $table_name . '&structure">Show structure</a>';
+            echo '<a href="admin.php?page=' . WSDV_PLUGIN_SLUG . '&table_name=' . $table_name . '&structure">Show structure</a>';
             echo '<br>';
         }
     } elseif (in_array($_GET['table_name'], $tables_names)) {
@@ -80,7 +80,7 @@ function db_viewer()
 
         if (isset($_GET['structure'])) {
             echo '<h1>Structure of ' . $table_name . '</h1>';
-            echo '<a href="admin.php?page=db-viewer"><- Back</a>';
+            echo '<a href="admin.php?page=' . WSDV_PLUGIN_SLUG . '"><- Back</a>';
 
             echo '<table class="table table-striped w-auto">';
             echo '<tr>';
@@ -129,7 +129,7 @@ function db_viewer()
         $results = $wpdb->get_results("SELECT * from {$table_name}");
 
         echo '<h1>Content of ' . $table_name . '</h1>';
-        echo '<a href="admin.php?page=db-viewer"><- Back</a>';
+        echo '<a href="admin.php?page=' . WSDV_PLUGIN_SLUG . '"><- Back</a>';
         echo '<table class="table table-striped w-auto">';
 
         $keys = array_keys((array) $results[0]);
