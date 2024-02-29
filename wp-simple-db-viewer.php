@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Database tables viewer
+ * Plugin Name: Simple Database Tables Viewer
  * Description: View your database tables
  * Author: florentroques
  */
